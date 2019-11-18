@@ -113,7 +113,7 @@ sub get_page($$) {
 sub get_list_of_pages($$) {
 	my ($self, $html) = @_;
 	my @pages = eval { JSON_Extrct->pages_extract($html) };
-	croak "$@" if ($@);
+	croak "$!" if ($@);
 	$self->target_id(shift @pages) if (not defined $self->target_id);
 	$self->end_cursor(shift @pages);
 	return @pages;

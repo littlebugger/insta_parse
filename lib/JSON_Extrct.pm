@@ -16,26 +16,22 @@ use Data::Dumper;
 
 sub media_extract($$) {
 	my ($self, $html ) = @_;
+	my @media;
+	my $json = json_extract($html);
 	try {
-		my @media;
-		my $json = json_extract($html);
 		$json = $json->{entry_data}{PostPage}[0]{graphql}{shortcode_media};
 		if ($json->{__typename} eq 'GraphSidecar') { #album
 			$json = $json->{edge_sidecar_to_children}{edges};
 			for my $edge (@{$json}) {
-				unless ($edge->{node}{is_video}) {
-					push @media, Media->new(json => $edge->{node});
-				}
+				push @media, Media->new(json => $edge->{node});
 			}
 		} else {
-			unless ( $json->{is_video} ) {
-				push @media, Media->new(json => $json);
-			}
+			push @media, Media->new(json => $json);
 		}
 		return @media;
 	}
 	catch {
-		croak "Media exctractor fail $@";
+		croak "Media exctractor fail $!\n";
 	}
 }
 
@@ -48,7 +44,7 @@ sub pages_extract($$) {
 			my $error = $@; $@ = undef;
 			$json = eval { from_json($html)->{data} }; #page from graphql?
 			if ($@) {
-				die "$error\n Non JSON string in pages_extract $@";
+				die "$error\n Non JSON string in pages_extract $!";
 			}
 	}
 
@@ -73,7 +69,7 @@ sub json_extract($) {
 	}
 	catch {
 		#
-		croak "Non HTML data fail $@";
+		croak "Non HTML data fail $!";
 	}
 }
 
