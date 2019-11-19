@@ -47,19 +47,17 @@ sub pages_extract($$) {
 				die "$error\n Non JSON string in pages_extract $!";
 			}
 	}
+	if (defined $json->{entry_data}) { #premiere
+		$json = $json->{entry_data}{ProfilePage}[0]{graphql};
+		my $target_id = $json->{user}{id};
+		push @pages_info, $target_id;
+	}
+	#update and so on
+	$json = $json->{user}{edge_owner_to_timeline_media};
+	push @pages_info, $json->{page_info}{end_cursor} if $json->{page_info}{has_next_page};
 
-		if (defined $json->{entry_data}) { #premiere
-			$json = $json->{entry_data}{ProfilePage}[0]{graphql};
-			my $target_id = $json->{user}{id};
-			push @pages_info, $target_id;
-		}
-		#update and so on
-		$json = $json->{user}{edge_owner_to_timeline_media};
-		my $end_cursor = $json->{page_info}{end_cursor};
-		push @pages_info, $end_cursor;
-
-		push @pages_info, map { $_->{node}{shortcode} } @{$json->{edges}};
-		return @pages_info;
+	push @pages_info, map { $_->{node}{shortcode} } @{$json->{edges}};
+	return @pages_info;
 }
 
 sub json_extract($) {

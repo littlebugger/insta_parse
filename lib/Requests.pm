@@ -115,12 +115,11 @@ sub get_list_of_pages($$) {
 	my @pages = eval { JSON_Extrct->pages_extract($html) };
 	croak "$!" if ($@);
 	$self->target_id(shift @pages) if (not defined $self->target_id);
-	$self->end_cursor(shift @pages);
+	$self->end_cursor( ($pages[0] =~ /[0-9a-z]{118}==/i)? shift @pages : undef );
 	return @pages;
 }
 
 sub extract_media($) {
-#	my ($self, $html) = @_;
 	JSON_Extrct->media_extract(@_);
 }
 
@@ -129,14 +128,13 @@ sub get_media($;@) {
 	my %args = @_;
 	my $requested_amount = $args{amount} // $self->entry_amount;
 	my @pages;
-	#my $html = $self->make_init_request();
-	#my @pages = $self->get_list_of_pages($html);
 	while ($requested_amount > @pages) {
 		push @pages, $self->get_list_of_pages(
 			(defined $self->target_id and defined $self->end_cursor)?
 				$self->make_update($requested_amount - @pages) : 
 				$self->make_init_request()
 			);
+		last if not defined $self->end_cursor;
 	}
 	my @media = map { extract_media( $self->get_page( $_ ) ) } @pages;
 	return @media;
