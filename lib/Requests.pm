@@ -124,9 +124,8 @@ sub extract_media($) {
 }
 
 sub get_media($;@) {
-	my $self = shift;
-	my %args = @_;
-	my $requested_amount = $args{amount} // $self->entry_amount;
+	my ($self, %kwargs) = @_;
+	my $requested_amount = $kwargs{amount} // $self->entry_amount;
 	my @pages;
 	while ($requested_amount > @pages) {
 		push @pages, $self->get_list_of_pages(
