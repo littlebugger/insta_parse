@@ -10,9 +10,9 @@ SYNOPSIS
 use utf8;
 use strict; use warnings;
 
-use Requests qw();
+use InstaCombine;
 
-my $agent = Requests->new(account => 'irinashayk'); #why not?
+my $agent = InstaCombine->new(account => 'irinashayk'); #why not?
 map { print $_->shortcode."\n" } $agent->get_media();
 ```
 
