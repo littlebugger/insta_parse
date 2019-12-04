@@ -1,13 +1,33 @@
-BEGIN { push @INC, '.' }
-package Requests;
-use 5.030;
+package InstaCombine;
+
+require Exporter;
+
+our %EXPORT_TAGS = ( 'all' => [ qw(
+	new
+	get_media
+	account
+	entry_limit
+	entry_amount
+	target_id
+
+) ] );
+
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} }, );
+
+our @EXPORT = qw(
+	new
+	get_media
+);
+
+our $VERSION = '0.01';
+
+
+# Preloaded methods go here.
 use utf8;
-use strict; use warnings;
 use Carp qw( croak );
 use Try::Tiny;
 
 use Moose;
-#use Moose::Util::TypeConstraints;
 use namespace::autoclean;
 
 use HTTP::Request;
@@ -31,7 +51,7 @@ around 'account' => sub {
 
 has 'ua' => (
 	is => 'rw',
-	default => sub { LWP::UserAgent->new(
+		default => sub { LWP::UserAgent->new(
 		#	    cookie_jar        => HTTP::CookieJar::LWP->new,
 		#	    protocols_allowed => ['http', 'https'],
 		#	    timeout           => 10,
@@ -47,6 +67,7 @@ my %ro = (
 	page_entry => 'p/',
 	entry_limit => 50,
 );
+
 my %rw = ( 
 	end_cursor => undef,
 	entry_amount => 12,
@@ -140,3 +161,47 @@ sub get_media($;@) {
 }
 
 1;
+
+__END__
+# Below is stub documentation for your module. You'd better edit it!
+
+=head1 NAME
+
+InstaCombine - Perl extension for simply scrap pictures and videos from instagram
+
+=head1 SYNOPSIS
+
+  use InstaCombine;
+
+  my $account = 'kittenisodd';
+
+  my $agent = InstaCombine->new(account => $account);
+  map { say ($_->get_url) } $agent->get_media();
+
+=head1 DESCRIPTION
+
+Flex program to scrap instagram with perl basics. No particular value whatsoever.
+
+=head2 EXPORT
+
+requires JSON, HTTP::Request, HTTP::CookieJar::LWP, LWP::UserAgent
+
+=head1 SEE ALSO
+
+Media.pm for spec about scrap which can be exracted from instagram with current version of program.
+
+https://github.com/littlebugger/insta_parse for request issues, bugs and requests.
+
+=head1 AUTHOR
+
+little_bugger,
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2019 by little_bugger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.30.0 or,
+at your option, any later version of Perl 5 you may have available.
+
+=cut

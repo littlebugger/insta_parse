@@ -1,18 +1,13 @@
-BEGIN { push @INC, "." }
 package JSON_Extrct;
 use 5.030;
 use utf8;
-use strict; use warnings;
 use Carp qw( croak );
 use Try::Tiny;
 
-#use Moose;
-#use Moose::Util::TypeConstraints;
 use namespace::autoclean;
 
 use JSON qw(from_json);
 use Media;
-use Data::Dumper;
 
 sub media_extract($$) {
 	my ($self, $html ) = @_;
