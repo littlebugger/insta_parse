@@ -12,7 +12,7 @@ use strict; use warnings;
 
 use InstaCombine;
 
-my $agent = InstaCombine->new(account => 'irinashayk'); #why not?
+my $agent = InstaCombine->new(account => 'elonmusk'); #why not?
 map { print $_->shortcode."\n" } $agent->get_media();
 ```
 
